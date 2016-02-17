@@ -1,6 +1,9 @@
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
+
 
 public class Raycer
 {
@@ -28,6 +31,7 @@ public class Raycer
 		counter = initialCounterValue;
 	}
 	
+	private static Lock lock = new ReentrantLock(); // Create a lock
 	public int counter;
 	
 	public class Incrementor implements Runnable
@@ -44,9 +48,23 @@ public class Raycer
 		
 		public void run()
 		{
-			while (counter < 1000000) 
+			lock.lock(); // Acquire the lock
+			try 
 			{
-				System.out.println("Value incremented from " + counter + " to " + incrementNumber());
+				
+				while (counter < 600000) 
+				{
+					System.out.println("Value incremented from " + counter + " to " + incrementNumber());
+				}
+
+			} 
+			catch (Exception e) 
+			{
+			
+			}
+			finally 
+			{
+				lock.unlock();
 			}
 		}
 
@@ -66,9 +84,22 @@ public class Raycer
 
 		public void run()
 		{
-			while (counter > 0) 
+			lock.lock(); // Acquire the lock
+			try 
 			{
-				System.out.println("Value decremented from " + counter + " to " + decrementNumber());
+				while (counter > 0) 
+				{
+					System.out.println("Value decremented from " + counter + " to " + decrementNumber());
+				}
+
+			} 
+			catch (Exception e) 
+			{
+				
+			}
+			finally 
+			{
+				lock.unlock();
 			}
 		}
 
